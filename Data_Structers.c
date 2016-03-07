@@ -5,36 +5,55 @@ Documentation of functions in header file
 */
 
 /*
-List
+List;
 {
-	int *sum;
-	int *count;
+	int sum;
+	int count;
+	struct Node *head;
+	struct Node *last;
+} 
+
+Node;
+{
 	int value;
-	struct List *head;
-	struct List *last;
-	struct List *next;
-	struct List *previous;
-}
+	struct Node *next;
+	struct Node *previous;
+	struct List * list;
+} 
+
 */
 /**************************
 LIST RELATED STUFF
 ***************************/
 
-List * ctor()
+Node * ctor()
 {
+	/*
 	List *nodes = malloc(sizeof(List *));
-	nodes->count = NULL;
-	nodes->sum = NULL;
+	nodes->count = malloc(sizeof(int));
+	nodes->sum = malloc(sizeof(int));
+	*(nodes->count) = 0;
+	*(nodes->sum) = 0;
 	nodes->previous = NULL;
 	nodes->next = NULL;
 	nodes->head = nodes;
 	nodes->last = nodes;
 	return nodes;
+	*/
+	Node *nodes = malloc(sizeof(Node));
+	List *list = malloc(sizeof(List));
+	nodes->previous = nodes->next = NULL;
+	list->head = list->last = nodes;
+	list->sum = 0;
+	list->count = 0;
+	nodes->lis = list;
+	return nodes;
 }
 
 
-List * ctorv(int data)
+Node * ctorv(int data)
 {
+	/*
 	List *nodes = malloc(sizeof(List));
 	nodes->count = malloc(sizeof(int));
 	nodes->sum = malloc(sizeof(int));
@@ -45,89 +64,184 @@ List * ctorv(int data)
 	nodes->previous = NULL;
 	nodes->head = nodes;
 	nodes->last = nodes;
-
 	return nodes;
+	*/
+	Node *nodes = malloc(sizeof(Node));
+	List *list = malloc(sizeof(List));
+	nodes->previous = nodes->next = NULL;
+	list->head = list->last = nodes;
+	list->sum = data;
+	list->count = 1;
+	nodes->lis = list;
+	nodes->value = data;
+	return nodes;
+
 }
 
-
-List * head(List *node)
+Node * head(Node *item)
 {
-	if (node != NULL)
+	if (item != NULL)
 	{
-		return node->head;
+		return item->lis->head;
 	}
 	return NULL;
 }
 
-List * last(List *node)
+Node * last(Node *item)
 {
-	if (node != NULL)
+	if(item != NULL)
 	{
-		return node->last;
+		return item->lis->last;
 	}
 	return NULL;
 }
 
-List * get_next(List *node)
+Node * get_next(Node *item)
 {
-	if (node != NULL)
+	if (item != NULL)
 	{
-		return node->next;
+		return (item->next);
 	}
 	return NULL;
 }
 
-List * get_prev(List *node)
+Node * get_prev(Node *item)
 {
-	if (node != NULL)
+	if (item != NULL)
 	{
-		return node->previous;
+		return (item->previous);
 	}
 	return NULL;
 	
 }
-
-List * addItem(List *node, int data)
+/*
+Get a pointer to a node (part of a list) and add a node to the end of the list
+*/
+Node * addItem(Node *item, int data)
 {
-	List *temp = node->last;
-	List *temp1 = temp;
-	if (node->count == NULL && node->sum == NULL) //node was not initialized (created with ctor)
-	{
-		node->count = malloc(sizeof(int));
-		node->sum = malloc(sizeof(int));
-	}
-	temp->next = malloc(sizeof(List));
-	temp->last = temp->next;
-	temp = temp->next;
-	temp->head = temp1->head;
-	temp->next = NULL;
-	temp->previous = temp1;
+	Node *temp = malloc(sizeof(Node));
+	item = item->lis->last; //push the node after the last node in the list
+	temp->next = item->next;
+	item->next = temp;
 	temp->value = data;
-	temp->sum = temp1->sum; ////saving the same address for sum on all nodes -> easier to manipulate without loops
-	temp->count = temp1->count; //saving the same address for count on all nodes
-	*(temp->count) += 1;
-	*(temp->sum) += data;
+	temp->next = NULL;
+	temp->previous = item;
+	temp->lis = item->lis;
+	temp->lis->last = temp;
+	temp->lis->count++;
+	temp->lis->sum += data;
+	return temp;
+	
+
+}
+
+
+Node * delItem(Node *item)
+{
+	Node *temp = NULL;
+	if (item->previous != NULL && item->next == NULL)
+	{ //deleting last node
+		temp = item->previous;
+		temp->lis->last = temp;
+		temp->next = NULL;
+	}
+	else if (item->previous == NULL && item->next != NULL)
+	{ //deleting first node
+		temp = item->next;
+		temp->lis->head = temp;
+		temp->previous = NULL;
+	}
+	else
+	{ //deleting from the middle of the list
+		temp = item->previous; //derefrencing the item node from previous and next nodes
+		temp->next = item->next;
+		item->next->previous = temp;
+	}
+	temp->lis->count--;
+	temp->lis->sum -= temp->value;
+	free(item);
 	return temp;
 }
 
+/*
+Function revieves a node to delete from a list
+And returns pointer to previous node. If all failes function returns NULL
+*/
+/*
+Node * delItem(Node *item)
+{
+	List * temp = NULL;;
+	if (item->previous == NULL && item->next == NULL)
+	{ //only one node in list
+		item->count = NULL;
+		item->sum = NULL;
+	}
+	else if (item->previous != NULL && item->next == NULL)
+	{ //deleting last node
+		temp = item->previous;
+		temp->last = temp;
+		temp->next = NULL;
+	}
+	else if (item->previous == NULL && item->next != NULL)
+	{ //deleting first node
+		temp = item->next;
+		temp->head = temp;
+		temp->previous = NULL;
+	}
+	else
+	{ //deleting from the middle of the list
+		temp = item->previous; //derefrencing the item node from previous and next nodes
+		temp->next = item->next;
+		item->next->previous = temp;
+	}
+	*(temp->count) -= 1;
+	*(temp->sum) -= item->value;
+	item->count = NULL;
+	item->sum = NULL;
+	free(item);
+	return temp;
+}
+
+/* FIRST TRY
 List * delItem(List *item)
 {
 	List *temp;
 	if (item->previous != NULL)
-	{
+	{ //NOT FIRST NODE
 		temp = item->previous;
 		*(temp->count) -= 1;
-		*(temp->sum) -= temp->value;
-		temp->next = item->next;
+		*(temp->sum) -= item->value;
+		if (item->next == NULL)
+		{ //LAST NODE
+			
+			temp->last = temp;
+		}
+		else
+		{ //deleting from middle
+			temp->last = item->last;
+			item->next->previous = temp; 
+		}
+		temp->next = item->next; //if last node then item->next is NULL (which is the wanted value)
+		temp->head = item->head;
+		temp->last = item->last;
 		item->count = NULL;
 		item->sum = NULL;
 		free(item);
 		return temp;
 	}
 	else if (item->next != NULL)
-	{
+	{ //NOT LAST NODE
 		temp = item->next;
-		temp->previous = item->previous;
+		if (item->previous == NULL)
+		{ //FIRST NODDE
+			temp->head = temp;
+		}
+		else
+		{
+			temp->head = item->head;
+			item
+		}
+		temp->previous = item->previous; // if first node then item->previoust is NULL (which is the wanted value)
 		*(temp->count) -= 1;
 		*(temp->sum) -= temp->value;
 		item->count = NULL;
@@ -143,37 +257,37 @@ List * delItem(List *item)
 	}
 	return NULL;
 }
+*/
 
-int get_len(List *node)
+int get_len(Node *item)
 {
-	return *(node->count);
+	return item->lis->count;
 }
 
-int get_data(List *node)
+int get_data(Node *item)
 {
-	return node->value;
+	return item->value;
 }
 
-double get_avg(List *node)
+double get_avg(Node *item)
 {
-	int s = *(node->sum);
-	int c = *(node->count);
+	int s = item->lis->sum;
+	int c = item->lis->count;
 	return (s / c);
 }
 
-void dtor(List *node)
+
+void dtor(Node *item)
 {
-	List * temp;
-	node = node->head;
-	temp = node;
-	free(temp->count); //count and sum have the same address on all nodes - no need to free for each node
-	free(temp->sum);
-	while (node->next != NULL)
+	List *temp = item->lis;
+	item = temp->head;
+	while (item != temp->last)
 	{
-		node = node->next;
-		free(node->previous);
+		item = item->next;
+		free(item->previous);
 	}
-	free(node);
+	free(item);
+	free(temp);
 }
 
 

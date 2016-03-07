@@ -7,69 +7,59 @@
 LIST RELATED STUFF
 ***************************/
 
-//List is two-way linked
 typedef struct List
 {
-	int value;
-	int *count;
-	int *sum;
-	struct List *head;
-	struct List *last;
-	struct List *next;
-	struct List *previous;
+	int sum;
+	int count;
+	struct Node *head;
+	struct Node *last;
 } List;
 
+typedef struct Node
+{
+	int value;
+	struct Node *next;
+	struct Node *previous;
+	struct List * lis;
+} Node;
 
-/*
-wanted to test an option to save head and last as globals though this restricts me to one list at a time
-other way was to give an id to each list and have a dynamically allocated array saving pointers in cells matching that id...
-Decided to just add more fields to struct
 
-List * lhead
-List * llast;
-*/
 //Create a new list and return a pointer, default constructor does not create new node
-List * ctor();
+Node * ctor();
 
 //Create a new List with a give value and same as above
-List * ctorv(int data); //ctor with value
+Node * ctorv(int data); //ctor with value
 
 //Get a pointer to the head of the list
-List * head(List *node);
+Node * head(Node *item);
 
 //Get a pointer to the end of the list
-List * last(List *node);
+Node * last(Node *item);
 
 //Get a pointer to the next node given the current node
-List * get_next(List *node);
+Node * get_next(Node *item);
 
 //Get a pointer to the previous node given the current node
-List * get_prev(List *node);
+Node * get_prev(Node *item);
 
 //Add an item to the list and return a pointer to said item
-List * addItem(List *node, int data);
+Node * addItem(Node *item, int data);
 
 //Get a pointer to a node and delete it from the list
 //Perhaps return a previous or next node instead of just deleting to keep track of the list in case of deleting current node
-List * delItem(List *item);
+Node * delItem(Node *item);
 
 //Get the value inside a node (the int data)
-int get_data(List *node);
+int get_data(Node *item);
 
 //Get a node in a list and return the number of nodes in it
-int get_len(List *node);
+int get_len(Node *item);
 
 //Get average of values inside a list
-double get_avg(List *node);
+double get_avg(Node *item);
 
 //Delete List and free memory
-void dtor(List *node);
-
-
-
-
-
-
+void dtor(Node *item);
 
 /**************************
 END OF LIST RELATED STUFF
