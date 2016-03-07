@@ -28,18 +28,6 @@ LIST RELATED STUFF
 
 Node * ctor()
 {
-	/*
-	List *nodes = malloc(sizeof(List *));
-	nodes->count = malloc(sizeof(int));
-	nodes->sum = malloc(sizeof(int));
-	*(nodes->count) = 0;
-	*(nodes->sum) = 0;
-	nodes->previous = NULL;
-	nodes->next = NULL;
-	nodes->head = nodes;
-	nodes->last = nodes;
-	return nodes;
-	*/
 	Node *nodes = malloc(sizeof(Node));
 	List *list = malloc(sizeof(List));
 	nodes->previous = nodes->next = NULL;
@@ -53,19 +41,6 @@ Node * ctor()
 
 Node * ctorv(int data)
 {
-	/*
-	List *nodes = malloc(sizeof(List));
-	nodes->count = malloc(sizeof(int));
-	nodes->sum = malloc(sizeof(int));
-	*(nodes->count) = 1;
-	*(nodes->sum) = data;
-	nodes->value = data;
-	nodes->next = NULL;
-	nodes->previous = NULL;
-	nodes->head = nodes;
-	nodes->last = nodes;
-	return nodes;
-	*/
 	Node *nodes = malloc(sizeof(Node));
 	List *list = malloc(sizeof(List));
 	nodes->previous = nodes->next = NULL;
@@ -162,102 +137,6 @@ Node * delItem(Node *item)
 	free(item);
 	return temp;
 }
-
-/*
-Function revieves a node to delete from a list
-And returns pointer to previous node. If all failes function returns NULL
-*/
-/*
-Node * delItem(Node *item)
-{
-	List * temp = NULL;;
-	if (item->previous == NULL && item->next == NULL)
-	{ //only one node in list
-		item->count = NULL;
-		item->sum = NULL;
-	}
-	else if (item->previous != NULL && item->next == NULL)
-	{ //deleting last node
-		temp = item->previous;
-		temp->last = temp;
-		temp->next = NULL;
-	}
-	else if (item->previous == NULL && item->next != NULL)
-	{ //deleting first node
-		temp = item->next;
-		temp->head = temp;
-		temp->previous = NULL;
-	}
-	else
-	{ //deleting from the middle of the list
-		temp = item->previous; //derefrencing the item node from previous and next nodes
-		temp->next = item->next;
-		item->next->previous = temp;
-	}
-	*(temp->count) -= 1;
-	*(temp->sum) -= item->value;
-	item->count = NULL;
-	item->sum = NULL;
-	free(item);
-	return temp;
-}
-
-/* FIRST TRY
-List * delItem(List *item)
-{
-	List *temp;
-	if (item->previous != NULL)
-	{ //NOT FIRST NODE
-		temp = item->previous;
-		*(temp->count) -= 1;
-		*(temp->sum) -= item->value;
-		if (item->next == NULL)
-		{ //LAST NODE
-			
-			temp->last = temp;
-		}
-		else
-		{ //deleting from middle
-			temp->last = item->last;
-			item->next->previous = temp; 
-		}
-		temp->next = item->next; //if last node then item->next is NULL (which is the wanted value)
-		temp->head = item->head;
-		temp->last = item->last;
-		item->count = NULL;
-		item->sum = NULL;
-		free(item);
-		return temp;
-	}
-	else if (item->next != NULL)
-	{ //NOT LAST NODE
-		temp = item->next;
-		if (item->previous == NULL)
-		{ //FIRST NODDE
-			temp->head = temp;
-		}
-		else
-		{
-			temp->head = item->head;
-			item
-		}
-		temp->previous = item->previous; // if first node then item->previoust is NULL (which is the wanted value)
-		*(temp->count) -= 1;
-		*(temp->sum) -= temp->value;
-		item->count = NULL;
-		item->sum = NULL;
-		free(item);
-		return temp;
-	}
-	else //incase only one node in list
-	{
-		item->count = NULL;
-		item->sum = NULL;
-		free(item);
-	}
-	return NULL;
-}
-*/
 
 int get_len(Node *item)
 {
